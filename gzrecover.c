@@ -28,7 +28,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define VERSION "0.8"
+#define VERSION "0.81"
 
 /* Global contants */
 #define DEFAULT_INBUF_SIZE (1024*1024)
@@ -185,7 +185,7 @@ skip_gzip_header(z_stream *d_stream)
 int
 main(int argc, char **argv)
 {
-  int opt, rc, rc2, ifd, ofd, founderr=0, foundgood=0;
+  int64_t opt, rc, rc2, ifd, ofd, founderr=0, foundgood=0;
   ssize_t bytes_read=0, tot_written=0;
   off_t errpos=0, errinc=0, readpos=0;
   char *infile; 
@@ -306,8 +306,8 @@ main(int argc, char **argv)
               errpos = bytes_read - d_stream.avail_in;
 
               if (verbose_mode)
-                fprintf(stderr, "Found error at byte %d in input stream\n",
-                        (int)(readpos - (bytes_read - errpos)));
+                fprintf(stderr, "Found error at byte %ld in input stream\n",
+                        (int64_t)(readpos - (bytes_read - errpos)));
 
               if (d_stream.avail_in == 0)
                 {
@@ -374,8 +374,8 @@ main(int argc, char **argv)
           errinc = 0;
 
 	  if (verbose_mode)
-            fprintf(stderr, "Found good data at byte %d in input stream\n",
-                    (int)(readpos - (bytes_read - d_stream.avail_in)));
+            fprintf(stderr, "Found good data at byte %ld in input stream\n",
+                    (int64_t)(readpos - (bytes_read - d_stream.avail_in)));
 
           if (split_mode)
             {
@@ -433,8 +433,8 @@ main(int argc, char **argv)
   close(ifd);
 
   if (verbose_mode)
-    fprintf(stderr, "Total decompressed output = %d bytes\n", 
-            (int)tot_written);
+    fprintf(stderr, "Total decompressed output = %ld bytes\n", 
+            (int64_t)tot_written);
 
   free(inbuf);
   free(outbuf);
